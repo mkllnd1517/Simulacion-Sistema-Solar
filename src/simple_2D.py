@@ -136,6 +136,7 @@ def main():
 
     venus = Planeta(0.723 * Planeta.UA, 0, 14, BLANCO, 4.8685 * 10**24)
     venus.y_vel = -35.02 * 1000  # velocidad inicial de venus
+
     planetas = [sol, tierra, marte, mercurio, venus]
 
     while run:
