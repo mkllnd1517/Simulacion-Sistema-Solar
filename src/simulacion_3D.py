@@ -10,6 +10,7 @@ import math
 
 from ursina import *
 
+import csv
 
 ANCHO = 800
 ALTO = 800
@@ -86,3 +87,8 @@ class Planeta:
         self.x += self.x_vel * self.DELTA_T
         self.y += self.y_vel * self.DELTA_T
         self.orbita.append((self.x, self.y))
+
+
+def main(data):
+    with open("data/ci_sistema_solar.csv", "r") as archivo:
+        data = archivo.read().splitlines()
