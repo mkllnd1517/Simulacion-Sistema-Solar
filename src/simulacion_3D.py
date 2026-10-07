@@ -89,6 +89,5 @@ class Planeta:
         self.orbita.append((self.x, self.y))
 
 
-def main(data):
+def main():
     with open("data/ci_sistema_solar.csv", "r") as archivo:
-        data = archivo.read().splitlines()
