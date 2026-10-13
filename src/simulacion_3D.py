@@ -51,7 +51,7 @@ class Planeta:
     def dibujar(self):
         self.entidad = Entity(
             model="sphere",
-            color=color.rgb(*self.color),
+            color=color.rgb32(*self.color),
             scale=(4 * (1 + math.log1p(self.radio / 6.371e6)) / (1 + math.log(2))),
             position=(
                 self.x * self.ESCALA,
