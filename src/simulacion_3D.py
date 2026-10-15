@@ -12,7 +12,7 @@ import csv
 from pathlib import Path
 
 from ursina import *
-from metodos_numericos.euler import paso_euler
+from metodos_numericos.euler import paso_euler as euler
 
 ANCHO = 800
 ALTO = 800  # para el tamaño de la ventana de la simulación
@@ -27,6 +27,7 @@ luz_solar = None
 acumulador = 0.0
 acumulador_orbitas = 0.0
 pasos_desde_traza = 0
+metodo_actual = None
 
 
 class Planeta:
@@ -136,7 +137,7 @@ def update():
 
     # Ejecutar tantos pasos físicos como sean necesarios.
     while acumulador >= Planeta.DELTA_T:
-        paso_euler(planetas, Planeta.DELTA_T)
+        metodo_actual(planetas, Planeta.DELTA_T)
         acumulador -= Planeta.DELTA_T
 
         pasos_desde_traza += 1
@@ -163,8 +164,13 @@ def update():
         acumulador_orbitas = 0.0
 
 
-def main():
-    global planetas, lineas_orbita, luz_solar
+def main(metodo):
+    """
+    Realiza la simulación 3D del sistema solar interno usando el método numérico seleccionado.
+    """
+    global planetas, lineas_orbita, luz_solar, metodo_actual
+
+    metodo_actual = metodo
 
     app = Ursina(
         title="Simulación 3D del Sistema Solar",
@@ -212,7 +218,3 @@ def main():
 
     lineas_orbita = {planeta: None for planeta in planetas}
     app.run()
-
-
-if __name__ == "__main__":
-    main()
