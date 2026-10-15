@@ -2,15 +2,17 @@
 Simulación 3D del sistema solar interno. Se busca mejorar la versión 2D
 añadiendo una simulación en 3D, con opción de importar los datos
 directamente y poder visualizar el sistema solar desde cualquier ángulo.
-También se estudiará la deformación del espacio-tiempo y el efecto de
-las lentes gravitacionales en haces de luz.
+Se observa que, importando otros datos, se puede simular cualquier sistema planetario
+y gran variedad de sistemas gravitatorios, siempre que no haya colisiones entre cuerpos,
+la aproximación de cuerpos puntuales sea válida y no haga falta tener en cuenta la relatividad.
 """
 
 import math
 import csv
 from pathlib import Path
-from ursina import *
 
+from ursina import *
+from metodos_numericos.euler import paso_euler
 
 ANCHO = 800
 ALTO = 800  # para el tamaño de la ventana de la simulación
@@ -61,9 +63,6 @@ class Planeta:
         )  # el radio se toma con una compresión logarítmica para que se vea mejor la simulación
 
     def gravedad(self, otro):
-        """
-        Calcula la fuerza gravitatoria entre este planeta y otro objeto.
-        """
         distancia_x = otro.x - self.x
         distancia_y = otro.y - self.y
         distancia_z = otro.z - self.z
@@ -88,19 +87,6 @@ class Planeta:
         f_z = factor * distancia_z
         return f_x, f_y, f_z
 
-    def actualizar_posicion(self, fuerza, dt):
-        """
-        Actualiza primero la velocidad y luego la posición del cuerpo.
-        """
-        fuerza_x, fuerza_y, fuerza_z = fuerza
-        self.vx += fuerza_x / self.masa * dt
-        self.vy += fuerza_y / self.masa * dt
-        self.vz += fuerza_z / self.masa * dt
-
-        self.x += self.vx * dt
-        self.y += self.vy * dt
-        self.z += self.vz * dt
-
     def actualizar_visual(self):
         self.entidad.position = (
             self.x * self.ESCALA,
@@ -109,32 +95,11 @@ class Planeta:
         )
 
 
-def paso_fisico(planetas, dt):
+def pinta_orbitas():
     """
-    Calcula todas las fuerzas y después mueve los cuerpos.
+    Actualiza las líneas que representan las órbitas de los cuerpos.
     """
-    fuerzas = []
 
-    # Se calculan antes de mover nada para que todos usen las mismas posiciones.
-    for planeta in planetas:
-        fx_total = fy_total = fz_total = 0
-        for otro in planetas:
-            if planeta == otro:
-                continue
-            fx, fy, fz = planeta.gravedad(otro)
-            fx_total += fx
-            fy_total += fy
-            fz_total += fz
-        fuerzas.append((fx_total, fy_total, fz_total))
-
-    for planeta, fuerza in zip(planetas, fuerzas):
-        planeta.actualizar_posicion(fuerza, dt)
-
-
-def actualizar_orbitas():
-    """
-    Vuelve a dibujar las líneas con los puntos guardados de cada órbita.
-    """
     for planeta in planetas:
         if len(planeta.orbita) < 2:
             continue
@@ -144,44 +109,58 @@ def actualizar_orbitas():
             for x, y, z in planeta.orbita
         ]
 
-        if lineas_orbita[planeta] is not None:
-            destroy(lineas_orbita[planeta])
+        linea_anterior = lineas_orbita.get(planeta)
+
+        if linea_anterior is not None:
+            destroy(linea_anterior)
 
         lineas_orbita[planeta] = Entity(
-            model=Mesh(vertices=vertices, mode="line", thickness=2),
+            model=Mesh(
+                vertices=vertices,
+                mode="line",
+                thickness=2,
+            ),
             color=color.rgb(*planeta.color),
         )
 
 
 def update():
     """
-    Ursina llama a esta función una vez por fotograma.
+    Actualiza la simulación en cada fotograma de Ursina.
+    El cálculo físico se delega al método numérico seleccionado.
     """
     global acumulador, acumulador_orbitas, pasos_desde_traza
 
+    # Convertir el tiempo real transcurrido en tiempo simulado.
     acumulador += time.dt * VELOCIDAD_SIMULACION
 
+    # Ejecutar tantos pasos físicos como sean necesarios.
     while acumulador >= Planeta.DELTA_T:
-        paso_fisico(planetas, Planeta.DELTA_T)
+        paso_euler(planetas, Planeta.DELTA_T)
         acumulador -= Planeta.DELTA_T
+
         pasos_desde_traza += 1
 
-        # Guarda un punto de la órbita cada seis horas simuladas.
+        # Guardar un punto de la órbita cada seis horas simuladas.
         if pasos_desde_traza >= 6:
             for planeta in planetas:
                 planeta.orbita.append((planeta.x, planeta.y, planeta.z))
+
             pasos_desde_traza = 0
 
+    # Actualizar la representación visual de los cuerpos.
     for planeta in planetas:
         planeta.actualizar_visual()
-        if planeta.sol:
+
+        if planeta.sol and luz_solar is not None:
             luz_solar.position = planeta.entidad.position
 
-    # Actualiza las líneas periódicamente, no en cada fotograma.
+    # Actualizar las líneas orbitales cada medio segundo real.
     acumulador_orbitas += time.dt
+
     if acumulador_orbitas >= 0.5:
-        actualizar_orbitas()
-        acumulador_orbitas = 0
+        pinta_orbitas()
+        acumulador_orbitas = 0.0
 
 
 def main():

@@ -1,7 +1,7 @@
 """
 Simulación simple 2D del sistema solar utilizando Pygame.
 Es la primera versión del proyecto, basado en la interacción
-gravitatoria de Newton.
+gravitatoria de Newton con cuerpos puntuales.
 """
 
 import math
