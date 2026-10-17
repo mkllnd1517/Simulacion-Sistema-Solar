@@ -19,7 +19,6 @@ def paso_euler_cromer(planetas, dt):
     """
     estado_inicial = [(p.x, p.y, p.z, p.vx, p.vy, p.vz) for p in planetas]
 
-    # 2. Calcular todas las fuerzas con las posiciones iniciales.
     fuerzas = []
 
     for i, planeta in enumerate(planetas):
@@ -37,8 +36,6 @@ def paso_euler_cromer(planetas, dt):
 
         fuerzas.append((fx_total, fy_total, fz_total))
 
-    # 3. Calcular las nuevas posiciones y velocidades.
-    # Euler-Cromer utiliza las velocidades y aceleraciones iniciales.
     nuevos_estados = []
 
     for planeta, estado, fuerza in zip(planetas, estado_inicial, fuerzas):

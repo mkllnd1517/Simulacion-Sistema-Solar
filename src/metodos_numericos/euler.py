@@ -18,12 +18,11 @@ def paso_euler(planetas, dt):
         Paso temporal en segundos.
     """
 
-    # 1. Guardar el estado inicial de todos los cuerpos.
+    # Guardar el estado inicial de todos los cuerpos.
     # Las posiciones y velocidades no deben cambiar durante el cálculo
     # de las fuerzas ni durante la preparación del nuevo estado.
     estado_inicial = [(p.x, p.y, p.z, p.vx, p.vy, p.vz) for p in planetas]
 
-    # 2. Calcular todas las fuerzas con las posiciones iniciales.
     fuerzas = []
 
     for i, planeta in enumerate(planetas):
@@ -41,8 +40,6 @@ def paso_euler(planetas, dt):
 
         fuerzas.append((fx_total, fy_total, fz_total))
 
-    # 3. Calcular las nuevas posiciones y velocidades.
-    # Euler explícito utiliza las velocidades y aceleraciones iniciales.
     nuevos_estados = []
 
     for planeta, estado, fuerza in zip(planetas, estado_inicial, fuerzas):
