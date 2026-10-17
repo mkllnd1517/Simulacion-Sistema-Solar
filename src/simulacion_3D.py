@@ -15,7 +15,7 @@ from ursina import *
 from metodos_numericos.euler import paso_euler as euler
 from metodos_numericos.euler_cromer import paso_euler_cromer as euler_cromer
 from metodos_numericos.verlet import paso_verlet as verlet
-
+from metodos_numericos.rk4 import paso_rk4 as rk4
 
 ANCHO = 800
 ALTO = 800  # para el tamaño de la ventana de la simulación
