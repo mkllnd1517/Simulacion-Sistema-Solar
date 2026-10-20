@@ -128,6 +128,11 @@ def pinta_orbitas():
         )
 
 
+def angulo_orbital():
+    self.phi = np.arctan(self.y, self.x)
+    # función adaptada si el plano de órbita es el XY
+
+
 def update():
     """
     Actualiza la simulación en cada fotograma de Ursina.
