@@ -10,7 +10,7 @@ la aproximación de cuerpos puntuales sea válida y no haga falta tener en cuent
 import math
 import csv
 from pathlib import Path
-
+import numpy as np
 from ursina import *
 from metodos_numericos.euler import paso_euler as euler
 from metodos_numericos.euler_cromer import paso_euler_cromer as euler_cromer
@@ -98,6 +98,10 @@ class Planeta:
             self.z * self.ESCALA,
         )
 
+    def angulo_orbital(self):
+        self.phi = np.arctan2(self.y, self.x)
+        # función adaptada si el plano de órbita es el XY
+
 
 def pinta_orbitas():
     """
@@ -126,11 +130,6 @@ def pinta_orbitas():
             ),
             color=color.rgb(*planeta.color),
         )
-
-
-def angulo_orbital():
-    self.phi = np.arctan(self.y, self.x)
-    # función adaptada si el plano de órbita es el XY
 
 
 def update():
