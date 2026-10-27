@@ -133,11 +133,15 @@ def periodo_orbital(metodo, planetas):
                 np.cos(delta),
             )
 
+            acumulado_previo = angulos_acumulados[p]
             angulos_acumulados[p] += delta
             angulos_previos[p] = phi
 
-            if abs(angulos_acumulados[p]) >= 2 * np.pi:
-                p.periodo = tiempo
+            objetivo = np.copysign(2 * np.pi, angulos_acumulados[p])
+            if abs(angulos_acumulados[p]) >= 2 * np.pi and delta != 0:
+                fraccion = (objetivo - acumulado_previo) / delta
+                fraccion = min(max(fraccion, 0.0), 1.0)
+                p.periodo = (tiempo - DELTA_T) + fraccion * DELTA_T
 
     # Aviso de los planetas que no completaron una órbita.
     for p in planetas:
@@ -242,10 +246,138 @@ def main():
 
             print(
                 f"{p.nombre:<12}"
-                f"{periodo_dias:>18.3f}"
-                f"{referencia_dias:>21.3f}"
-                f"{error:>13.5f}"
+                f"{periodo_dias:>18.6f}"
+                f"{referencia_dias:>21.6f}"
+                f"{error:>13.6f}"
             )
+
+    # Conservación momento y energía
+    duracion = 700 * SEGUNDOS_DIA
+    numero_pasos = duracion // DELTA_T
+
+    resultados = {}
+
+    for nombre_metodo, metodo in metodos:
+        # Cada método parte de las mismas condiciones iniciales.
+        planetas = cargar_planetas()
+
+        tiempos = []
+        energias = []
+        momentos = []
+
+        for paso in range(numero_pasos + 1):
+            t = paso * DELTA_T
+
+            tiempos.append(t / SEGUNDOS_DIA)
+            energias.append(energia(planetas))
+            momentos.append(momento_angular(planetas))
+
+            # No avanzar después de registrar el último instante.
+            if paso < numero_pasos:
+                metodo(planetas, DELTA_T)
+
+        energias = np.array(energias)
+        momentos = np.array(momentos)
+
+        modulos_momento = np.linalg.norm(momentos, axis=1)
+
+        energia_inicial = energias[0]
+        momento_inicial = momentos[0]
+        modulo_inicial = modulos_momento[0]
+
+        if energia_inicial == 0 or modulo_inicial == 0:
+            raise ValueError(
+                "La energía o el momento angular inicial es cero; "
+                "no se puede calcular el error relativo."
+            )
+
+        error_energia = np.abs((energias - energia_inicial) / energia_inicial) * 100
+
+        error_momento = (
+            np.linalg.norm(momentos - momento_inicial, axis=1) / modulo_inicial * 100
+        )
+
+        resultados[nombre_metodo] = {
+            "tiempo": np.array(tiempos),
+            "energia": energias,
+            "momento": modulos_momento,
+            "error_energia": error_energia,
+            "error_momento": error_momento,
+        }
+
+    # Gráfica energía
+    plt.figure(figsize=(10, 6))
+
+    for nombre, datos in resultados.items():
+        plt.plot(
+            datos["tiempo"],
+            datos["energia"],
+            label=nombre,
+        )
+
+    plt.xlabel("Tiempo (días)")
+    plt.ylabel("Energía mecánica total (J)")
+    plt.title("Evolución de la energía mecánica del sistema")
+    plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+
+    # Gráfica momento
+    plt.figure(figsize=(10, 6))
+
+    for nombre, datos in resultados.items():
+        plt.plot(
+            datos["tiempo"],
+            datos["momento"],
+            label=nombre,
+        )
+
+    plt.xlabel("Tiempo (días)")
+    plt.ylabel(r"$|\mathbf{L}|$ (kg m$^2$/s)")
+    plt.title("Evolución del módulo del momento angular")
+    plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+
+    # Gráfica error energía.
+    plt.figure(figsize=(10, 6))
+
+    for nombre, datos in resultados.items():
+        plt.plot(
+            datos["tiempo"],
+            datos["error_energia"],
+            label=nombre,
+        )
+
+    plt.xlabel("Tiempo (días)")
+    plt.ylabel("Error relativo de energía (%)")
+    plt.title("Error relativo de la energía mecánica")
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.yscale("log")
+    plt.tight_layout()
+
+    # Gráfica error momento angular.
+    plt.figure(figsize=(10, 6))
+
+    for nombre, datos in resultados.items():
+        plt.plot(
+            datos["tiempo"],
+            datos["error_momento"],
+            label=nombre,
+        )
+
+    plt.xlabel("Tiempo (días)")
+    plt.ylabel("Error relativo del momento angular (%)")
+    plt.title("Error relativo del momento angular total")
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.yscale("log")
+    plt.tight_layout()
+
+    plt.show()
 
 
 main()
