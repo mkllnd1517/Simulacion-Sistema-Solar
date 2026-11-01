@@ -1,6 +1,10 @@
 """
 Análisis de la precisión de distintos métodos numéricos para integrar
 las ecuaciones de movimiento del sistema solar.
+Se estudia el error en el periodo obtenido y las conservaciones de
+energía mecánica y momento angular. Al ejecutar se guardan en una carpeta
+de resultados las gráficas de la energía, momento y sus errores respecto
+al tiempo.
 """
 
 import csv
@@ -26,6 +30,27 @@ PERIODOS_REFERENCIA = {
     "Tierra": 365.256 * SEGUNDOS_DIA,
     "Marte": 686.980 * SEGUNDOS_DIA,
 }
+
+
+def guardar_figura(nombre_archivo):
+    """
+    Guarda la figura actual en la carpeta 'resultados' de la raíz del proyecto.
+    Crea la carpeta si todavía no existe.
+    """
+    carpeta_script = Path(__file__).resolve().parent
+
+    # Si este archivo está dentro de 'src', la raíz del proyecto es su padre.
+    if carpeta_script.name == "src":
+        carpeta_proyecto = carpeta_script.parent
+    else:
+        carpeta_proyecto = carpeta_script
+
+    carpeta_resultados = carpeta_proyecto / "resultados"
+    carpeta_resultados.mkdir(parents=True, exist_ok=True)
+
+    ruta_figura = carpeta_resultados / nombre_archivo
+    plt.savefig(ruta_figura, dpi=300, bbox_inches="tight")
+    print(f"Figura guardada en: {ruta_figura}")
 
 
 def cargar_planetas():
@@ -252,7 +277,7 @@ def main():
             )
 
     # Conservación momento y energía
-    duracion = 700 * SEGUNDOS_DIA
+    duracion = 2000 * SEGUNDOS_DIA
     numero_pasos = duracion // DELTA_T
 
     resultados = {}
@@ -322,6 +347,7 @@ def main():
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.tight_layout()
+    guardar_figura("energia_mecanica.png")
 
     # Gráfica momento
     plt.figure(figsize=(10, 6))
@@ -340,6 +366,7 @@ def main():
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.tight_layout()
+    guardar_figura("momento_angular.png")
 
     # Gráfica error energía.
     plt.figure(figsize=(10, 6))
@@ -358,6 +385,7 @@ def main():
     plt.legend()
     plt.yscale("log")
     plt.tight_layout()
+    guardar_figura("error_energia.png")
 
     # Gráfica error momento angular.
     plt.figure(figsize=(10, 6))
@@ -376,6 +404,7 @@ def main():
     plt.legend()
     plt.yscale("log")
     plt.tight_layout()
+    guardar_figura("error_momento_angular.png")
 
     plt.show()
 
