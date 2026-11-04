@@ -4,7 +4,7 @@ Este proyecto analiza una simulación tridimensional del Sistema Solar interior 
 
 Se comparan los métodos de Euler explícito, Euler-Cromer, Velocity Verlet y Runge-Kutta de cuarto orden (RK4), a partir de los resultados obtenidos para un paso temporal de **3600 s, equivalente a una hora**, y un estudio cuyo horizonte de conservación es de **2000 días**.
 
-> **Conclusión principal.** RK4 ofrece la mayor precisión observada en este experimento a paso temporal fijo: conserva la energía mucho mejor que los demás métodos y produce soluciones muy próximas a Velocity Verlet. Sin embargo, los periodos de referencia no constituyen una solución exacta del mismo problema físico. Por eso, el menor error de Euler frente al periodo publicado de Mercurio no demuestra que Euler sea más preciso: es compatible con una compensación entre el sesgo de las condiciones iniciales o del modelo y la deriva numérica. Para una simulación prolongada con un buen equilibrio entre coste y comportamiento cualitativo, Velocity Verlet es una alternativa especialmente interesante.
+_>&#x20;_**Conclusión principal.**_&#x20;RK4 ofrece la mayor precisión observada en este experimento a paso temporal fijo: conserva la energía mucho mejor que los demás métodos y produce soluciones muy próximas a Velocity Verlet. Sin embargo, los periodos de referencia no constituyen una solución exacta del mismo problema físico. Por eso, el menor error de Euler frente al periodo publicado de Mercurio no demuestra que Euler sea más preciso: es compatible con una compensación entre el sesgo de las condiciones iniciales o del modelo y la deriva numérica. Para una simulación prolongada con un buen equilibrio entre coste y comportamiento cualitativo, Velocity Verlet es una alternativa especialmente interesante._
 
 ## 1. Modelo físico
 
@@ -14,9 +14,9 @@ El objetivo es simular la evolución de varios cuerpos que interactúan mediante
 
 El estudio permite responder a dos tipos de preguntas diferentes:
 
-1\\. **¿Qué método aproxima mejor la solución del modelo implementado?** Para ello interesan la convergencia al reducir el paso, la conservación de invariantes y la comparación con una solución numérica de referencia del mismo modelo.
+1. **¿Qué método aproxima mejor la solución del modelo implementado?** Para ello interesan la convergencia al reducir el paso, la conservación de invariantes y la comparación con una solución numérica de referencia del mismo modelo.
 
-2\\. **¿Hasta qué punto reproduce el modelo el Sistema Solar real?** Aquí también importan las condiciones iniciales, los cuerpos omitidos, las constantes físicas y las aproximaciones de la gravedad newtoniana.
+2. **¿Hasta qué punto reproduce el modelo el Sistema Solar real?** Aquí también importan las condiciones iniciales, los cuerpos omitidos, las constantes físicas y las aproximaciones de la gravedad newtoniana.
 
 La simulación visual permite observar órbitas, inclinaciones y estabilidad general. El análisis numérico complementa esa observación con medidas cuantitativas: primera vuelta orbital, energía mecánica total y momento angular total.
 
@@ -49,37 +49,35 @@ La aproximación de cuerpos puntuales es razonable para estudiar el movimiento o
 La evolución física utiliza coordenadas cartesianas tridimensionales. El estado de cada cuerpo contiene su posición y su velocidad:
 
 $$
+
 \mathbf r_i=(x_i,y_i,z_i),\qquad \mathbf v_i=(v_{x,i},v_{y,i},v_{z,i}).
+
 $$
 
 Las unidades internas son:
 
 | Magnitud | Unidad empleada |
-
 |---|---|
-
 | Posición | metro, m |
-
 | Velocidad | m/s |
-
 | Masa | kg |
-
 | Tiempo de integración | segundo, s |
-
 | Energía | julio, J |
-
 | Momento angular | kg·m²/s |
-
 | Presentación de periodos y gráficas | día de 86400 s |
 
 En los cálculos se utilizan las constantes:
 
 $$
+
 G=6.67428\times10^{-11}\ \mathrm{m^3\,kg^{-1}\,s^{-2}},
+
 $$
 
 $$
+
 1\ \mathrm{UA}=149.6\times10^9\ \mathrm{m}, \qquad 1\ \mathrm{día}=86400\ \mathrm{s}.
+
 $$
 
 Las posiciones se expresan en unidades astronómicas y se convierten a metros; las velocidades se expresan en m/s. El día empleado es una unidad de duración fija.
@@ -93,23 +91,31 @@ Para comparar con efemérides de alta precisión es preferible utilizar parámet
 La fuerza ejercida sobre el cuerpo $i$ por el cuerpo $j$ es:
 
 $$
+
 \mathbf F_{ij} =Gm_i m_j \frac{\mathbf r_j-\mathbf r_i} {\|\mathbf r_j-\mathbf r_i\|^3}.
+
 $$
 
 El método `Planeta.gravedad()` calcula esta expresión mediante las diferencias de coordenadas, el cuadrado de la distancia y su raíz. La fuerza total sobre $i$ se obtiene sumando las contribuciones de todos los demás cuerpos. Al dividir por $m_i$, su aceleración queda:
 
 $$
+
 \frac{d^2\mathbf r_i}{dt^2} =\mathbf a_i =G\sum_{j\ne i}m_j \frac{\mathbf r_j-\mathbf r_i} {\|\mathbf r_j-\mathbf r_i\|^3}.
+
 $$
 
 Para la componente $x$:
 
 $$
+
 \frac{dx_i}{dt}=v_{x,i},
+
 $$
 
 $$
+
 \frac{dv_{x,i}}{dt} =G\sum_{j\ne i}m_j \frac{x_j-x_i} {\left[(x_j-x_i)^2+(y_j-y_i)^2+(z_j-z_i)^2\right]^{3/2}},
+
 $$
 
 con expresiones análogas para $y$ y $z$.
@@ -123,15 +129,21 @@ Así, las $N$ ecuaciones vectoriales de segundo orden se convierten en un sistem
 La función `energia()` calcula:
 
 $$
+
 E=K+U,
+
 $$
 
 $$
+
 K=\sum_i\frac12m_i\|\mathbf v_i\|^2,
+
 $$
 
 $$
-U=-\sum_{i\<j}\frac{Gm_im_j}{r_{ij}}, \qquad r_{ij}=\|\mathbf r_j-\mathbf r_i\|.
+
+U=-\sum_{i<j}\frac{Gm_im_j}{r_{ij}}, \qquad r_{ij}=\|\mathbf r_j-\mathbf r_i\|.
+
 $$
 
 Como el potencial no depende explícitamente del tiempo y no hay fuerzas externas ni disipativas, la solución exacta conserva $E$. Una variación de la energía calculada a partir de la trayectoria numérica es, por tanto, un indicador del error del integrador y del redondeo, no una pérdida física contemplada por el modelo.
@@ -141,13 +153,17 @@ Como el potencial no depende explícitamente del tiempo y no hay fuerzas externa
 El momento angular total del sistema se expresa mediante el vector:
 
 $$
+
 \mathbf L=\sum_i m_i(\mathbf r_i\times\mathbf v_i).
+
 $$
 
 Las fuerzas internas cumplen la tercera ley de Newton y están dirigidas a lo largo de la línea que une cada pareja. En consecuencia, sus pares de fuerzas no producen un momento neto:
 
 $$
-\frac{d\mathbf L}{dt} =\sum_{i\<j}(\mathbf r_i-\mathbf r_j)\times\mathbf F_{ij} =\mathbf 0.
+
+\frac{d\mathbf L}{dt} =\sum_{i<j}(\mathbf r_i-\mathbf r_j)\times\mathbf F_{ij} =\mathbf 0.
+
 $$
 
 Se conservan el vector completo y, por tanto, su módulo.
@@ -181,13 +197,17 @@ Para un sistema de varios cuerpos no se dispone de una solución general cerrada
 Se define el estado global:
 
 $$
+
 \mathbf y=(\mathbf r_1,\ldots,\mathbf r_N, \mathbf v_1,\ldots,\mathbf v_N),
+
 $$
 
 cuya evolución viene dada por:
 
 $$
+
 \frac{d\mathbf y}{dt}=f(t,\mathbf y) =(\mathbf v_1,\ldots,\mathbf v_N, \mathbf a_1,\ldots,\mathbf a_N).
+
 $$
 
 La gravedad newtoniana autónoma no depende explícitamente de $t$, aunque se mantenga esa variable en la formulación general de los métodos.
@@ -199,11 +219,15 @@ El paso $h=\Delta t$ controla la resolución temporal. Reducirlo suele disminuir
 Euler explícito aproxima la derivada por su valor al comienzo del intervalo:
 
 $$
+
 \mathbf r_{n+1}=\mathbf r_n+h\mathbf v_n,
+
 $$
 
 $$
+
 \mathbf v_{n+1}=\mathbf v_n+h\mathbf a_n.
+
 $$
 
 Las dos actualizaciones utilizan el estado antiguo. Posee error local de truncamiento de orden $O(h^2)$ y **error global de orden $O(h)$**. Necesita una evaluación de aceleraciones por paso y tiene un coste directo de $O(N^2)$ para un sistema de $N$ cuerpos sin optimizaciones de suma de fuerzas.
@@ -213,7 +237,9 @@ Sus ventajas son la sencillez, la facilidad de implementación y su valor como m
 Para este modelo, el momento angular tampoco se conserva exactamente. Al sustituir las actualizaciones de Euler y usar la anulación del par de fuerzas internas aparece:
 
 $$
+
 \mathbf L_{n+1}-\mathbf L_n =h^2\sum_i m_i\mathbf v_n^{\,i}\times\mathbf a_n^{\,i},
+
 $$
 
 que en general no es cero. Esta pérdida de conservación es coherente con la fuerte deriva observada en las gráficas.
@@ -223,11 +249,15 @@ que en general no es cero. Esta pérdida de conservación es coherente con la fu
 Euler-Cromer, también llamado Euler semiimplícito o simpléctico en esta formulación, actualiza primero la velocidad y después la posición con la velocidad nueva:
 
 $$
+
 \mathbf v_{n+1}=\mathbf v_n+h\mathbf a(\mathbf r_n),
+
 $$
 
 $$
+
 \mathbf r_{n+1}=\mathbf r_n+h\mathbf v_{n+1}.
+
 $$
 
 Aunque sigue siendo de **primer orden global**, su comportamiento en sistemas hamiltonianos separables es mucho mejor que el de Euler explícito. Es un método simpléctico: preserva la estructura geométrica del problema, no el valor exacto de la energía original. Bajo condiciones apropiadas, su energía suele presentar oscilaciones acotadas alrededor del valor correcto, en lugar de una deriva sistemática rápida.
@@ -241,17 +271,23 @@ Su bajo coste lo hace atractivo para una visualización interactiva y para simul
 Velocity Verlet actualiza la posición mediante la velocidad y aceleración iniciales:
 
 $$
+
 \mathbf r_{n+1} =\mathbf r_n+h\mathbf v_n+\frac12h^2\mathbf a_n.
+
 $$
 
 Después calcula la aceleración en la nueva posición y actualiza la velocidad:
 
 $$
+
 \mathbf a_{n+1}=\mathbf a(\mathbf r_{n+1}),
+
 $$
 
 $$
+
 \mathbf v_{n+1} =\mathbf v_n+\frac h2(\mathbf a_n+\mathbf a_{n+1}).
+
 $$
 
 Tiene **segundo orden global**. Si se reutiliza la última aceleración como la inicial del siguiente paso, solo necesita una evaluación nueva de aceleraciones por paso. Una implementación que recalcule ambas puede hacer dos evaluaciones, aunque la segunda sea redundante.
@@ -265,23 +301,33 @@ Ofrece un buen equilibrio entre coste, sencillez y fidelidad cualitativa. Su pre
 RK4 combina cuatro evaluaciones del campo de derivadas dentro de cada paso. Para el estado completo $\mathbf y$:
 
 $$
+
 \mathbf k_1=f(t_n,\mathbf y_n),
+
 $$
 
 $$
+
 \mathbf k_2=f\left(t_n+\frac h2, \mathbf y_n+\frac h2\mathbf k_1\right),
+
 $$
 
 $$
+
 \mathbf k_3=f\left(t_n+\frac h2, \mathbf y_n+\frac h2\mathbf k_2\right),
+
 $$
 
 $$
+
 \mathbf k_4=f(t_n+h,\mathbf y_n+h\mathbf k_3),
+
 $$
 
 $$
+
 \mathbf y_{n+1} =\mathbf y_n+\frac h6 (\mathbf k_1+2\mathbf k_2+2\mathbf k_3+\mathbf k_4).
+
 $$
 
 Cada $\mathbf k$ contiene componentes de velocidad y de aceleración. Las aceleraciones de las etapas deben evaluarse con las posiciones intermedias correspondientes; no basta con aplicar los coeficientes de RK4 a las posiciones ignorando las velocidades de etapa.
@@ -293,15 +339,10 @@ RK4 suele proporcionar una precisión puntual muy alta con pasos moderados. No e
 ### 2.6. Comparación teórica de los métodos
 
 | Método | Orden global | Evaluaciones nuevas de aceleración por paso | Conservación y estructura | Comportamiento orbital esperado |
-
 |---|---:|---:|---|---|
-
 | Euler explícito | 1 | 1 | No simpléctico; no conserva exactamente $E$ ni $\mathbf L$ | Deriva de energía y deformación progresiva de la órbita |
-
 | Euler-Cromer | 1 | 1 | Simpléctico; $\mathbf L$ conservado salvo redondeo | Energía normalmente oscilante; error de fase relativamente grande |
-
 | Velocity Verlet | 2 | 1 reutilizando la aceleración final | Simpléctico y reversible; $\mathbf L$ conservado salvo redondeo | Buen comportamiento cualitativo a largo plazo con paso adecuado |
-
 | RK4 | 4 | 4 | No simpléctico; conservación no garantizada exactamente | Gran precisión a corto y medio plazo; posible deriva muy lenta |
 
 Las propiedades simplécticas no significan que la energía original se conserve de manera exacta. Se puede interpretar el método como una aproximación muy cercana a la evolución de un **hamiltoniano modificado**, cercano al original. Esto ayuda a entender por qué un método de orden inferior puede ser preferible a otro de orden superior en ciertos estudios largos.
@@ -315,27 +356,16 @@ El número de evaluaciones tampoco equivale directamente a tiempo de ejecución 
 ### 3.1. Parámetros de las simulaciones
 
 | Parámetro | Configuración utilizada |
-
 |---|---|
-
 | Modelo físico | Gravedad newtoniana entre cuerpos puntuales |
-
 | Sistema de los resultados | Sol, Mercurio, Venus, Tierra y Marte |
-
 | Métodos | Euler, Euler-Cromer, Velocity Verlet y RK4 |
-
 | Paso físico de análisis | $h=3600$ s = 1 h = 1/24 de día |
-
 | Duración de conservación | 2000 días = 172800000 s |
-
 | Pasos de conservación por método | 48000 |
-
 | Instantes registrados por método | 48001, incluidos $t=0$ y $t=2000$ días |
-
 | Condiciones iniciales | Sol, Mercurio, Venus, Tierra y Marte |
-
 | Aritmética de los estados | Números de Python/NumPy; habitualmente doble precisión |
-
 | Referencias de periodo | 87,969; 224,701; 365,256; 686,980 días |
 
 #### Diferencia entre el experimento de periodos y el de conservación
@@ -360,9 +390,9 @@ En los cuatro casos se utiliza el mismo paso de análisis, el mismo horizonte de
 
 Esta comparación controla correctamente las condiciones de partida, pero tiene dos límites:
 
-1\\. **Igual paso no significa igual coste.** RK4 realiza cuatro evaluaciones de aceleraciones por paso, frente a una de los otros métodos en implementaciones eficientes.
+1. **Igual paso no significa igual coste.** RK4 realiza cuatro evaluaciones de aceleraciones por paso, frente a una de los otros métodos en implementaciones eficientes.
 
-2\\. **Igual referencia astronómica no significa igual error de integración.** Todos comparten el mismo modelo físico y los mismos datos iniciales, pero la referencia publicada no es la solución exacta de ese modelo.
+2. **Igual referencia astronómica no significa igual error de integración.** Todos comparten el mismo modelo físico y los mismos datos iniciales, pero la referencia publicada no es la solución exacta de ese modelo.
 
 Para una comparación rigurosa de precisión deben añadirse una solución de referencia del mismo problema y un estudio de convergencia. Para comparar eficiencia deben medirse errores a igual presupuesto de evaluaciones o de tiempo de cómputo.
 
@@ -375,19 +405,25 @@ Para una comparación rigurosa de precisión deben añadirse una solución de re
 Para cada planeta se define su posición relativa al Sol:
 
 $$
+
 \boldsymbol\rho_i=\mathbf r_i-\mathbf r_\odot.
+
 $$
 
 Para estimar el periodo, calculo el ángulo azimutal de la proyección de la posición relativa sobre el plano XY:
 
 $$
-\phi_i=\operatorname{atan2}(\rho_{y,i},\rho_{x,i}).
+
+\phi_i=\mathrm{atan2}(\rho_{y,i},\rho_{x,i}).
+
 $$
 
 `atan2` selecciona el cuadrante correcto y devuelve un ángulo envuelto en el intervalo $(-\pi,\pi]$. Para evitar el salto artificial al cruzar la rama de corte, el incremento entre dos instantes se corrige mediante:
 
 $$
-\delta_n=\operatorname{atan2} \left(\sin(\phi_{n+1}-\phi_n), \cos(\phi_{n+1}-\phi_n)\right).
+
+\delta_n=\mathrm{atan2} \left(\sin(\phi_{n+1}-\phi_n), \cos(\phi_{n+1}-\phi_n)\right).
+
 $$
 
 Después se acumulan los incrementos hasta alcanzar una magnitud de $2\pi$. El signo permite tratar órbitas retrógradas, siempre que el movimiento angular sea suficientemente regular.
@@ -395,7 +431,9 @@ Después se acumulan los incrementos hasta alcanzar una magnitud de $2\pi$. El s
 Si $\Theta_n$ es el ángulo acumulado antes del paso y $\Theta_{n+1}=\Theta_n+\delta_n$ supera el objetivo $\Theta=\pm2\pi$, el instante de cruce se estima mediante interpolación lineal:
 
 $$
-\lambda=\frac{\Theta_\*-\Theta_n}{\delta_n}, \qquad T_{\mathrm{num}}=t_n+\lambda h.
+
+\lambda=\frac{\Theta_*-\Theta_n}{\delta_n}, \qquad T_{\mathrm{num}}=t_n+\lambda h.
+
 $$
 
 La interpolación permite obtener una estimación del instante de cruce entre dos muestras, en lugar de redondear el periodo a un múltiplo entero de una hora.
@@ -419,15 +457,10 @@ La interpolación permite obtener una estimación del instante de cruce entre do
 El diccionario `PERIODOS_REFERENCIA` contiene:
 
 | Planeta | Periodo de referencia, días | Tipo de valor compatible |
-
 |---|---:|---|
-
 | Mercurio | 87,969 | Periodo sideral publicado por NASA NSSDC [4](https://nssdc.gsfc.nasa.gov/planetary/factsheet/mercuryfact.html) |
-
 | Venus | 224,701 | Periodo sideral publicado por NASA NSSDC [1](https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html) |
-
 | Tierra | 365,256 | Periodo sideral publicado por NASA NSSDC [1](https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html) |
-
 | Marte | 686,980 | Periodo sideral publicado por NASA NSSDC [2](https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html) |
 
 ### 4.3. Error relativo
@@ -435,13 +468,17 @@ El diccionario `PERIODOS_REFERENCIA` contiene:
 Calculo:
 
 $$
+
 \varepsilon_T= \frac{|T_{\mathrm{num}}-T_{\mathrm{ref}}|} {T_{\mathrm{ref}}}\times100.
+
 $$
 
 Es una **discrepancia relativa frente a una referencia astronómica**, no una medida pura del error de discretización. De manera esquemática contiene:
 
 $$
+
 \text{diferencia observada} =\text{efecto del integrador} +\text{efecto de las condiciones iniciales} +\text{diferencia de modelo} +\text{diferencia de definición del periodo}.
+
 $$
 
 La descomposición es conceptual, no una suma de términos que se hayan medido por separado. El valor absoluto oculta el signo: un periodo demasiado corto y otro demasiado largo pueden mostrar el mismo porcentaje.
@@ -451,29 +488,19 @@ La descomposición es conceptual, no una suma de términos que se hayan medido p
 Los periodos proporcionados, en días de 86400 s, son:
 
 | Planeta | Euler | Euler-Cromer | Velocity Verlet | RK4 | Referencia |
-
 |---|---:|---:|---:|---:|---:|
-
 | Mercurio | 87,870332 | 85,376929 | 85,376649 | 85,376384 | 87,969000 |
-
 | Venus | 226,850138 | 224,374057 | 224,373945 | 224,373843 | 224,701000 |
-
 | Tierra | 367,663918 | 365,190867 | 365,190772 | 365,190709 | 365,256000 |
-
 | Marte | 685,415028 | 682,944778 | 682,944754 | 682,944721 | 686,980000 |
 
 Los errores relativos obtenidos son:
 
 | Planeta | Euler, % | Euler-Cromer, % | Velocity Verlet, % | RK4, % |
-
 |---|---:|---:|---:|---:|
-
 | Mercurio | 0,112162 | 2,946574 | 2,946892 | 2,947193 |
-
 | Venus | 0,956443 | 0,145501 | 0,145551 | 0,145597 |
-
 | Tierra | 0,659241 | 0,017832 | 0,017858 | 0,017875 |
-
 | Marte | 0,227805 | 0,587386 | 0,587389 | 0,587394 |
 
 Se conservan los errores de la salida original. Al recalcularlos usando únicamente los periodos ya redondeados puede cambiar la última cifra decimal, sin relevancia física.
@@ -485,15 +512,10 @@ Se conservan los errores de la salida original. Al recalcularlos usando únicame
 Los tres métodos producen periodos muy próximos entre sí. Frente a RK4, sus diferencias son:
 
 | Planeta | Euler-Cromer − RK4, s | Verlet − RK4, s |
-
 |---|---:|---:|
-
 | Mercurio | 47,0880 | 22,8960 |
-
 | Venus | 18,4896 | 8,8128 |
-
 | Tierra | 13,6512 | 5,4432 |
-
 | Marte | 4,9248 | 2,8512 |
 
 Todas son menores que el paso de 3600 s, algo posible gracias a la interpolación del cruce. No obstante, estar por debajo del paso no convierte automáticamente esas diferencias en cotas de error. La cercanía entre Verlet y RK4 es un argumento a favor de que describen una órbita muy similar; confirmarlo exige comparar posiciones, velocidades y convergencia, no solo cuatro periodos.
@@ -503,13 +525,17 @@ Todas son menores que el paso de 3600 s, algo posible gracias a la interpolació
 Para RK4, la diferencia con signo respecto a la referencia es:
 
 $$
+
 85.376384-87.969000=-2.592616\ \text{días}.
+
 $$
 
 Euler obtiene en cambio:
 
 $$
+
 87.870332-87.969000=-0.098668\ \text{días}.
+
 $$
 
 Es decir, Euler alarga la primera vuelta unas 2,494 días respecto a RK4 y termina mucho más cerca del valor publicado. Al mismo tiempo, las gráficas muestran que Euler es el método que peor conserva la energía y el momento angular.
@@ -533,7 +559,9 @@ Marte tiene la mayor discrepancia absoluta con RK4, unos 4,035 días, pero Mercu
 Se utiliza la energía total del sistema:
 
 $$
-E(t)=\sum_i\frac12m_i\|\mathbf v_i(t)\|^2 -\sum_{i\<j}\frac{Gm_im_j}{r_{ij}(t)}.
+
+E(t)=\sum_i\frac12m_i\|\mathbf v_i(t)\|^2 -\sum_{i<j}\frac{Gm_im_j}{r_{ij}(t)}.
+
 $$
 
 El valor negativo es compatible con un sistema ligado, tomando el cero de potencial en separación infinita. Que la energía aumente hacia valores menos negativos no significa que se acerque a cero por un proceso físico del modelo: puede ser una ganancia artificial introducida por la discretización.
@@ -543,7 +571,9 @@ El valor negativo es compatible con un sistema ligado, tomando el cero de potenc
 Calculo:
 
 $$
+
 \varepsilon_E(t)= \frac{|E(t)-E(0)|}{|E(0)|}\times100.
+
 $$
 
 El valor absoluto del denominador permite interpretar correctamente el porcentaje aunque $E(0)<0$. El indicador mide la desviación respecto al estado inicial, no respecto a una solución analítica desconocida.
@@ -597,7 +627,9 @@ Conviene complementarlas con una figura sin Euler o con un panel ampliado, y exp
 El momento angular total es:
 
 $$
+
 \mathbf L(t)=\sum_i m_i\bigl(\mathbf r_i(t)\times\mathbf v_i(t)\bigr).
+
 $$
 
 La función `momento_angular()` calcula sus tres componentes y conserva la información vectorial hasta el momento de evaluar los diagnósticos. La conservación se debe a la anulación de los momentos de las fuerzas internas, no a que cada órbita esté aislada.
@@ -607,7 +639,9 @@ La función `momento_angular()` calcula sus tres componentes y conserva la infor
 El error utilizado es:
 
 $$
+
 \varepsilon_L(t)= \frac{\|\mathbf L(t)-\mathbf L(0)\|} {\|\mathbf L(0)\|}\times100.
+
 $$
 
 Este indicador detecta cambios de módulo y de dirección. Es más completo que comparar únicamente $|\mathbf L(t)|$, pues dos vectores de igual longitud pero direcciones distintas no representan el mismo estado de rotación total.
@@ -661,23 +695,14 @@ Esto muestra que la tabla de periodos está midiendo a la vez el integrador y la
 ### Comparación por criterios
 
 | Criterio | Mejor comportamiento observado o esperado |
-
 |---|---|
-
 | Conservación de energía durante 2000 días con $h=1$ h | RK4 |
-
 | Conservación del momento angular | Euler-Cromer y Verlet, compatibles con conservación hasta redondeo; RK4 también muy preciso |
-
 | Cercanía de los periodos entre métodos de mayor precisión | Verlet y RK4 |
-
 | Estructura geométrica para integraciones largas | Euler-Cromer y especialmente Verlet |
-
 | Menor número de evaluaciones por paso | Euler, Euler-Cromer y Verlet eficiente |
-
 | Mayor orden formal | RK4 |
-
 | Equilibrio entre coste y comportamiento orbital prolongado | Velocity Verlet, pendiente de comprobar a mayor duración |
-
 | Método menos recomendable para este problema | Euler explícito |
 
 No se puede deducir de la tabla cuál es más rápido en tiempo real: no se han medido tiempos ni errores a igual coste. RK4 necesita aproximadamente cuatro veces más evaluaciones de fuerza por paso que una implementación de Verlet que reutilice aceleraciones. Esa relación de trabajo no se traduce automáticamente en una relación de tiempo total, especialmente en la aplicación visual.
@@ -698,17 +723,17 @@ Una elección óptima depende del objetivo. Para la precisión observada en este
 
 ### 7.1. Conclusiones
 
-1\\. **RK4 es el método más preciso del conjunto en las condiciones ensayadas.** A una hora de paso y durante 2000 días ofrece el menor error de energía y periodos muy próximos a los de Velocity Verlet.
+1. **RK4 es el método más preciso del conjunto en las condiciones ensayadas.** A una hora de paso y durante 2000 días ofrece el menor error de energía y periodos muy próximos a los de Velocity Verlet.
 
-2\\. **Velocity Verlet proporciona el mejor compromiso cualitativo para prolongar la simulación con paso fijo.** Es de segundo orden, simpléctico, reversible y reutiliza aceleraciones. Su superioridad práctica a muy largo plazo frente a RK4 es una expectativa razonable, no algo demostrado todavía por estas cuatro gráficas.
+2. **Velocity Verlet proporciona el mejor compromiso cualitativo para prolongar la simulación con paso fijo.** Es de segundo orden, simpléctico, reversible y reutiliza aceleraciones. Su superioridad práctica a muy largo plazo frente a RK4 es una expectativa razonable, no algo demostrado todavía por estas cuatro gráficas.
 
-3\\. **Euler-Cromer mejora radicalmente a Euler pese a tener el mismo orden formal.** La diferencia demuestra que las propiedades geométricas pueden importar tanto como el orden en un problema orbital.
+3. **Euler-Cromer mejora radicalmente a Euler pese a tener el mismo orden formal.** La diferencia demuestra que las propiedades geométricas pueden importar tanto como el orden en un problema orbital.
 
-4\\. **Euler explícito no es adecuado como integrador principal.** Su deriva de energía y momento angular modifica las órbitas de forma acumulativa.
+4. **Euler explícito no es adecuado como integrador principal.** Su deriva de energía y momento angular modifica las órbitas de forma acumulativa.
 
-5\\. **El error de Mercurio con Euler no debe interpretarse como una victoria.** Su aparente cercanía al periodo publicado es compatible con la compensación de errores y contradice la pérdida de conservación observada.
+5. **El error de Mercurio con Euler no debe interpretarse como una victoria.** Su aparente cercanía al periodo publicado es compatible con la compensación de errores y contradice la pérdida de conservación observada.
 
-6\\. **El modelo es apropiado para explorar y comparar, no para producir efemérides verificadas.** La principal mejora pendiente no es añadir más cifras a la salida, sino documentar los datos y validar la convergencia respecto al mismo problema físico.
+6. **El modelo es apropiado para explorar y comparar, no para producir efemérides verificadas.** La principal mejora pendiente no es añadir más cifras a la salida, sino documentar los datos y validar la convergencia respecto al mismo problema físico.
 
 ---
 
@@ -748,17 +773,17 @@ Por ello, los resultados de esta primera parte se utilizarán como referencia pa
 
 Se recomienda:
 
-1\\. Detectar varias revoluciones y estimar una media, conservando también la variación entre vueltas.
+1. Detectar varias revoluciones y estimar una media, conservando también la variación entre vueltas.
 
-2\\. Comparar el detector azimutal con uno definido en el plano orbital inicial o instantáneo.
+2. Comparar el detector azimutal con uno definido en el plano orbital inicial o instantáneo.
 
-3\\. Registrar distancia, velocidad y elementos osculadores en el cierre para comprobar qué significa realmente «completar una vuelta».
+3. Registrar distancia, velocidad y elementos osculadores en el cierre para comprobar qué significa realmente «completar una vuelta».
 
-4\\. Refinar el instante de cruce mediante un método de búsqueda de raíces y estados interpolados de mayor calidad.
+4. Refinar el instante de cruce mediante un método de búsqueda de raíces y estados interpolados de mayor calidad.
 
-5\\. Comparar periodos medios con definiciones astronómicas compatibles, distinguiendo sideral, anomalístico y otras alternativas.
+5. Comparar periodos medios con definiciones astronómicas compatibles, distinguiendo sideral, anomalístico y otras alternativas.
 
-6\\. No interpretar los decimales impresos como incertidumbre estadística.
+6. No interpretar los decimales impresos como incertidumbre estadística.
 
 Para los cuerpos poco inclinados del sistema interior, el detector actual puede ser suficiente como primera aproximación. Su principal limitación en este estudio no es necesariamente la proyección XY, sino la comparación de una sola vuelta de un modelo reducido con una referencia genérica.
 
@@ -799,3 +824,4 @@ Las fuentes externas utilizadas para contrastar los parámetros físicos y los v
 - NASA, material educativo sobre la precesión relativista de Mercurio: [Newton and Einstein](https://imagine.gsfc.nasa.gov/educators/programs/cosmictimes/educators/workshops/docs/InquiringIntoNatureUniverse/Newton_Einstein_FactCards.pdf).
 
 Los resultados numéricos, las tablas y las gráficas comentados en el informe corresponden a los experimentos realizados para este proyecto. No se incluye aquí una correspondencia con archivos concretos del código.
+
