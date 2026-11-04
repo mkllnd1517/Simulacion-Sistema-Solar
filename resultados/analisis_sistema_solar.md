@@ -119,13 +119,11 @@ E=K+U,
 $$
 
 $$
-K=\sum_i \frac{1}{2}m_i \|\mathbf{v}_i\|^2,
+K=\sum_i \frac{1}{2}m_i\left\lVert\mathbf{v}_i\right\rVert^2,
 $$
 
 $$
-U=-\sum_{i<j}\frac{Gm_i m_j}{r_{ij}},
-\qquad
-r_{ij}=\|\mathbf{r}_j-\mathbf{r}_i\|.
+U=-\sum_{i<j} \frac{Gm_i m_j}{r_{ij}}, \qquad r_{ij}=\left\lVert\mathbf{r}_j-\mathbf{r}_i\right\rVert.
 $$
 
 Como el potencial no depende explícitamente del tiempo y no hay fuerzas externas ni disipativas, la solución exacta conserva $E$. Una variación de la energía calculada a partir de la trayectoria numérica es, por tanto, un indicador del error del integrador y del redondeo, no una pérdida física contemplada por el modelo.
