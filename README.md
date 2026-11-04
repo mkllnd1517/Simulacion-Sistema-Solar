@@ -39,7 +39,7 @@ La comparación de estos métodos permite estudiar cómo influyen el integrador 
 │       └── rk4.py
 │
 ├── resultados/
-│   ├── analisis.md
+│   ├── analisis_sistema_solar.md
 │   ├── energia_mecanica.png
 │   ├── error_energia.png
 │   ├── error_momento_angular.png
