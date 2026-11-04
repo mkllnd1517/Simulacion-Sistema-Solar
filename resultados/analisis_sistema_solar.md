@@ -47,7 +47,6 @@ La aproximación de cuerpos puntuales es razonable para estudiar el movimiento o
 ### 1.3. Sistema de referencia y unidades
 
 La evolución física utiliza coordenadas cartesianas tridimensionales. El estado de cada cuerpo contiene su posición y su velocidad:
-
 \[
 
 \mathbf r_i=(x_i,y_i,z_i),\qquad
@@ -55,7 +54,6 @@ La evolución física utiliza coordenadas cartesianas tridimensionales. El estad
 \mathbf v_i=(v_{x,i},v_{y,i},v_{z,i}).
 
 \]
-
 Las unidades internas son:
 
 | Magnitud | Unidad empleada |
@@ -77,13 +75,11 @@ Las unidades internas son:
 | Presentación de periodos y gráficas | día de 86400 s |
 
 En los cálculos se utilizan las constantes:
-
 \[
 
 G=6.67428\times10^{-11}\ \mathrm{m^3\,kg^{-1}\,s^{-2}},
 
 \]
-
 \[
 
 1\ \mathrm{UA}=149.6\times10^9\ \mathrm{m},
@@ -93,65 +89,57 @@ G=6.67428\times10^{-11}\ \mathrm{m^3\,kg^{-1}\,s^{-2}},
 1\ \mathrm{día}=86400\ \mathrm{s}.
 
 \]
-
 Las posiciones se expresan en unidades astronómicas y se convierten a metros; las velocidades se expresan en m/s. El día empleado es una unidad de duración fija.
 
-Estos valores de \(G\) y de la UA son aproximaciones. JPL recoge \(G=6.67430\times10^{-11}\ \mathrm{m^3\,kg^{-1}\,s^{-2}}\) y una UA de \(149597870700\) m [1]\(https\://ssd.jpl.nasa.gov/astro_par.html). La diferencia relativa de la UA empleada es aproximadamente un 0,001423 %, y la de \\(G\\), un 0,000300 % respecto al valor recomendado citado. Son diferencias pequeñas frente a las discrepancias de periodo de varias décimas o varios porcentajes observadas aquí. Por sí solas, no constituyen una explicación convincente del error de casi el 3 % de Mercurio.
+Estos valores de \(G\) y de la UA son aproximaciones. JPL recoge \(G=6.67430\times10^{-11}\ \mathrm{m^3\,kg^{-1}\,s^{-2}}\) y una UA de \(149597870700\) m [1](https://ssd.jpl.nasa.gov/astro_par.html). La diferencia relativa de la UA empleada es aproximadamente un 0,001423 %, y la de \(G\), un 0,000300 % respecto al valor recomendado citado. Son diferencias pequeñas frente a las discrepancias de periodo de varias décimas o varios porcentajes observadas aquí. Por sí solas, no constituyen una explicación convincente del error de casi el 3 % de Mercurio.
 
 Para comparar con efemérides de alta precisión es preferible utilizar parámetros gravitatorios \(GM\) coherentes con la fuente de datos, en lugar de combinar masas y constantes de procedencias distintas.
 
 ### 1.4. Ecuaciones del movimiento
 
 La fuerza ejercida sobre el cuerpo \(i\) por el cuerpo \(j\) es:
-
 \[
 
 \mathbf F_{ij}
 
-=Gm_i m_j
+\=Gm_i m_j
 
 \frac{\mathbf r_j-\mathbf r_i}
 
-{\|\mathbf r_j-\mathbf r_i\|^3}.
+{\\|\mathbf r_j-\mathbf r_i\\|^3}.
 
 \]
-
 El método `Planeta.gravedad()` calcula esta expresión mediante las diferencias de coordenadas, el cuadrado de la distancia y su raíz. La fuerza total sobre \(i\) se obtiene sumando las contribuciones de todos los demás cuerpos. Al dividir por \(m_i\), su aceleración queda:
-
 \[
 
 \frac{d^2\mathbf r_i}{dt^2}
 
-=\mathbf a_i
+\=\mathbf a_i
 
-=G\sum_{j\ne i}m_j
+\=G\sum_{j\ne i}m_j
 
 \frac{\mathbf r_j-\mathbf r_i}
 
-{\|\mathbf r_j-\mathbf r_i\|^3}.
+{\\|\mathbf r_j-\mathbf r_i\\|^3}.
 
 \]
-
 Para la componente \(x\):
-
 \[
 
 \frac{dx_i}{dt}=v_{x,i},
 
 \]
-
 \[
 
 \frac{dv_{x,i}}{dt}
 
-=G\sum_{j\ne i}m_j
+\=G\sum_{j\ne i}m_j
 
 \frac{x_j-x_i}
 
 {\left[(x_j-x_i)^2+(y_j-y_i)^2+(z_j-z_i)^2\right]^{3/2}},
 
 \]
-
 con expresiones análogas para \(y\) y \(z\).
 
 Así, las \(N\) ecuaciones vectoriales de segundo orden se convierten en un sistema de \(6N\) ecuaciones escalares de primer orden. Para cinco cuerpos hay 30 variables de estado. El sistema está acoplado: la aceleración de cada planeta depende de las posiciones de los demás, por lo que las órbitas no son problemas de dos cuerpos completamente independientes.
@@ -161,52 +149,42 @@ Así, las \(N\) ecuaciones vectoriales de segundo orden se convierten en un sist
 #### Energía mecánica total
 
 La función `energia()` calcula:
-
 \[
 
 E=K+U,
 
 \]
-
 \[
 
-K=\sum_i\frac12m_i\|\mathbf v_i\|^2,
+K=\sum_i\frac12m_i\\|\mathbf v_i\\|^2,
 
 \]
-
 \[
 
-U=-\sum_{i<j}\frac{Gm_im_j}{r_{ij}},
+U=-\sum_{i\<j}\frac{Gm_im_j}{r_{ij}},
 
 \qquad
 
-r_{ij}=\|\mathbf r_j-\mathbf r_i\|.
+r_{ij}=\\|\mathbf r_j-\mathbf r_i\\|.
 
 \]
-
 Como el potencial no depende explícitamente del tiempo y no hay fuerzas externas ni disipativas, la solución exacta conserva \(E\). Una variación de la energía calculada a partir de la trayectoria numérica es, por tanto, un indicador del error del integrador y del redondeo, no una pérdida física contemplada por el modelo.
 
 #### Momento angular total
 
 El momento angular total del sistema se expresa mediante el vector:
-
 \[
 
 \mathbf L=\sum_i m_i(\mathbf r_i\times\mathbf v_i).
 
 \]
-
 Las fuerzas internas cumplen la tercera ley de Newton y están dirigidas a lo largo de la línea que une cada pareja. En consecuencia, sus pares de fuerzas no producen un momento neto:
-
-\[
 
 \frac{d\mathbf L}{dt}
 
-=\sum_{i<j}(\mathbf r_i-\mathbf r_j)\times\mathbf F_{ij}
+\=\sum_{i\<j}(\mathbf r_i-\mathbf r_j)\times\mathbf F_{ij}
 
-=\mathbf 0.
-
-\]
+\=\mathbf 0.
 
 Se conservan el vector completo y, por tanto, su módulo. 
 
@@ -237,7 +215,6 @@ Estas aproximaciones son aceptables para el objetivo didáctico y comparativo de
 Para un sistema de varios cuerpos no se dispone de una solución general cerrada comparable a la órbita kepleriana de dos cuerpos. Es necesario aproximar la trayectoria mediante pasos temporales.
 
 Se define el estado global:
-
 \[
 
 \mathbf y=(\mathbf r_1,\ldots,\mathbf r_N,
@@ -245,19 +222,16 @@ Se define el estado global:
 \mathbf v_1,\ldots,\mathbf v_N),
 
 \]
-
 cuya evolución viene dada por:
-
 \[
 
 \frac{d\mathbf y}{dt}=f(t,\mathbf y)
 
-=(\mathbf v_1,\ldots,\mathbf v_N,
+\=(\mathbf v_1,\ldots,\mathbf v_N,
 
 \mathbf a_1,\ldots,\mathbf a_N).
 
 \]
-
 La gravedad newtoniana autónoma no depende explícitamente de \(t\), aunque se mantenga esa variable en la formulación general de los métodos.
 
 El paso \(h=\Delta t\) controla la resolución temporal. Reducirlo suele disminuir el error de discretización, pero aumenta el número de pasos y puede acabar haciendo dominante el redondeo. El orden del método describe cómo disminuye el error en un intervalo finito bajo hipótesis de suavidad; no garantiza por sí solo una buena conservación durante tiempos arbitrariamente largos.
@@ -265,51 +239,43 @@ El paso \(h=\Delta t\) controla la resolución temporal. Reducirlo suele disminu
 ### 2.2. Método de Euler explícito
 
 Euler explícito aproxima la derivada por su valor al comienzo del intervalo:
-
 \[
 
 \mathbf r_{n+1}=\mathbf r_n+h\mathbf v_n,
 
 \]
-
 \[
 
 \mathbf v_{n+1}=\mathbf v_n+h\mathbf a_n.
 
 \]
-
 Las dos actualizaciones utilizan el estado antiguo. Posee error local de truncamiento de orden \(O(h^2)\) y **error global de orden \(O(h)\)**. Necesita una evaluación de aceleraciones por paso y tiene un coste directo de \(O(N^2)\) para un sistema de \(N\) cuerpos sin optimizaciones de suma de fuerzas.
 
 Sus ventajas son la sencillez, la facilidad de implementación y su valor como método de referencia. Su principal problema es que no posee la estructura geométrica adecuada para conservar el comportamiento orbital a largo plazo. En problemas oscilatorios suele introducir una deriva de energía incluso con pasos relativamente pequeños.
 
 Para este modelo, el momento angular tampoco se conserva exactamente. Al sustituir las actualizaciones de Euler y usar la anulación del par de fuerzas internas aparece:
-
 \[
 
 \mathbf L_{n+1}-\mathbf L_n
 
-=h^2\sum_i m_i\mathbf v_n^{\,i}\times\mathbf a_n^{\,i},
+\=h^2\sum_i m_i\mathbf v_n^{\,i}\times\mathbf a_n^{\,i},
 
 \]
-
 que en general no es cero. Esta pérdida de conservación es coherente con la fuerte deriva observada en las gráficas.
 
 ### 2.3. Método de Euler-Cromer
 
 Euler-Cromer, también llamado Euler semiimplícito o simpléctico en esta formulación, actualiza primero la velocidad y después la posición con la velocidad nueva:
-
 \[
 
 \mathbf v_{n+1}=\mathbf v_n+h\mathbf a(\mathbf r_n),
 
 \]
-
 \[
 
 \mathbf r_{n+1}=\mathbf r_n+h\mathbf v_{n+1}.
 
 \]
-
 Aunque sigue siendo de **primer orden global**, su comportamiento en sistemas hamiltonianos separables es mucho mejor que el de Euler explícito. Es un método simpléctico: preserva la estructura geométrica del problema, no el valor exacto de la energía original. Bajo condiciones apropiadas, su energía suele presentar oscilaciones acotadas alrededor del valor correcto, en lugar de una deriva sistemática rápida.
 
 Necesita una evaluación de aceleraciones por paso. Para fuerzas centrales evaluadas de forma consistente, conserva el momento angular salvo redondeo. No es, en general, reversible temporalmente.
@@ -319,31 +285,26 @@ Su bajo coste lo hace atractivo para una visualización interactiva y para simul
 ### 2.4. Método Velocity Verlet
 
 Velocity Verlet actualiza la posición mediante la velocidad y aceleración iniciales:
-
 \[
 
 \mathbf r_{n+1}
 
-=\mathbf r_n+h\mathbf v_n+\frac12h^2\mathbf a_n.
+\=\mathbf r_n+h\mathbf v_n+\frac12h^2\mathbf a_n.
 
 \]
-
 Después calcula la aceleración en la nueva posición y actualiza la velocidad:
-
 \[
 
 \mathbf a_{n+1}=\mathbf a(\mathbf r_{n+1}),
 
 \]
-
 \[
 
 \mathbf v_{n+1}
 
-=\mathbf v_n+\frac h2(\mathbf a_n+\mathbf a_{n+1}).
+\=\mathbf v_n+\frac h2(\mathbf a_n+\mathbf a_{n+1}).
 
 \]
-
 Tiene **segundo orden global**. Si se reutiliza la última aceleración como la inicial del siguiente paso, solo necesita una evaluación nueva de aceleraciones por paso. Una implementación que recalcule ambas puede hacer dos evaluaciones, aunque la segunda sea redundante.
 
 Es simpléctico y reversible temporalmente para un problema gravitatorio newtoniano con paso fijo. Para fuerzas centrales conserva el momento angular salvo redondeo. Su energía no es exactamente constante, pero suele oscilar alrededor del valor inicial sin una deriva secular importante mientras se mantengan las condiciones que explican ese comportamiento.
@@ -353,13 +314,11 @@ Ofrece un buen equilibrio entre coste, sencillez y fidelidad cualitativa. Su pre
 ### 2.5. Método Runge-Kutta de cuarto orden (RK4)
 
 RK4 combina cuatro evaluaciones del campo de derivadas dentro de cada paso. Para el estado completo \(\mathbf y\):
-
 \[
 
 \mathbf k_1=f(t_n,\mathbf y_n),
 
 \]
-
 \[
 
 \mathbf k_2=f\left(t_n+\frac h2,
@@ -367,7 +326,6 @@ RK4 combina cuatro evaluaciones del campo de derivadas dentro de cada paso. Para
 \mathbf y_n+\frac h2\mathbf k_1\right),
 
 \]
-
 \[
 
 \mathbf k_3=f\left(t_n+\frac h2,
@@ -375,23 +333,20 @@ RK4 combina cuatro evaluaciones del campo de derivadas dentro de cada paso. Para
 \mathbf y_n+\frac h2\mathbf k_2\right),
 
 \]
-
 \[
 
 \mathbf k_4=f(t_n+h,\mathbf y_n+h\mathbf k_3),
 
 \]
-
 \[
 
 \mathbf y_{n+1}
 
-=\mathbf y_n+\frac h6
+\=\mathbf y_n+\frac h6
 
 (\mathbf k_1+2\mathbf k_2+2\mathbf k_3+\mathbf k_4).
 
 \]
-
 Cada \(\mathbf k\) contiene componentes de velocidad y de aceleración. Las aceleraciones de las etapas deben evaluarse con las posiciones intermedias correspondientes; no basta con aplicar los coeficientes de RK4 a las posiciones ignorando las velocidades de etapa.
 
 Su error global es de **cuarto orden**, \(O(h^4)\), y necesita cuatro evaluaciones del campo de aceleraciones por paso. Requiere más operaciones y almacenamiento temporal que los otros esquemas.
@@ -481,23 +436,18 @@ Para una comparación rigurosa de precisión deben añadirse una solución de re
 ### 4.1. Procedimiento de cálculo
 
 Para cada planeta se define su posición relativa al Sol:
-
 \[
 
 \boldsymbol\rho_i=\mathbf r_i-\mathbf r_\odot.
 
 \]
-
 Para estimar el periodo, calculo el ángulo azimutal de la proyección de la posición relativa sobre el plano XY:
-
 \[
 
 \phi_i=\operatorname{atan2}(\rho_{y,i},\rho_{x,i}).
 
 \]
-
 `atan2` selecciona el cuadrante correcto y devuelve un ángulo envuelto en el intervalo \((-\pi,\pi]\). Para evitar el salto artificial al cruzar la rama de corte, el incremento entre dos instantes se corrige mediante:
-
 \[
 
 \delta_n=\operatorname{atan2}
@@ -507,21 +457,18 @@ Para estimar el periodo, calculo el ángulo azimutal de la proyección de la pos
 \cos(\phi_{n+1}-\phi_n)\right).
 
 \]
-
 Después se acumulan los incrementos hasta alcanzar una magnitud de \(2\pi\). El signo permite tratar órbitas retrógradas, siempre que el movimiento angular sea suficientemente regular.
 
-Si \(\Theta_n\) es el ángulo acumulado antes del paso y \(\Theta_{n+1}=\Theta_n+\delta_n\) supera el objetivo \(\Theta_*=\pm2\pi\), el instante de cruce se estima mediante interpolación lineal:
-
+Si \(\Theta_n\) es el ángulo acumulado antes del paso y \(\Theta_{n+1}=\Theta_n+\delta_n\) supera el objetivo \(\Theta_\*=\pm2\pi\), el instante de cruce se estima mediante interpolación lineal:
 \[
 
-\lambda=\frac{\Theta_*-\Theta_n}{\delta_n},
+\lambda=\frac{\Theta_\*-\Theta_n}{\delta_n},
 
 \qquad
 
 T_{\mathrm{num}}=t_n+\lambda h.
 
 \]
-
 La interpolación permite obtener una estimación del instante de cruce entre dos muestras, en lugar de redondear el periodo a un múltiplo entero de una hora.
 
 #### Limitaciones del estimador
@@ -557,7 +504,6 @@ El diccionario `PERIODOS_REFERENCIA` contiene:
 ### 4.3. Error relativo
 
 Calculo:
-
 \[
 
 \varepsilon_T=
@@ -567,14 +513,12 @@ Calculo:
 {T_{\mathrm{ref}}}\times100.
 
 \]
-
 Es una **discrepancia relativa frente a una referencia astronómica**, no una medida pura del error de discretización. De manera esquemática contiene:
-
 \[
 
 \text{diferencia observada}
 
-=\text{efecto del integrador}
+\=\text{efecto del integrador}
 
 +\text{efecto de las condiciones iniciales}
 
@@ -583,7 +527,6 @@ Es una **discrepancia relativa frente a una referencia astronómica**, no una me
 +\text{diferencia de definición del periodo}.
 
 \]
-
 La descomposición es conceptual, no una suma de términos que se hayan medido por separado. El valor absoluto oculta el signo: un periodo demasiado corto y otro demasiado largo pueden mostrar el mismo porcentaje.
 
 ### 4.4. Resultados
@@ -641,21 +584,17 @@ Todas son menores que el paso de 3600 s, algo posible gracias a la interpolació
 #### El buen periodo de Mercurio con Euler es engañoso
 
 Para RK4, la diferencia con signo respecto a la referencia es:
-
 \[
 
 85.376384-87.969000=-2.592616\ \text{días}.
 
 \]
-
 Euler obtiene en cambio:
-
 \[
 
 87.870332-87.969000=-0.098668\ \text{días}.
 
 \]
-
 Es decir, Euler alarga la primera vuelta unas 2,494 días respecto a RK4 y termina mucho más cerca del valor publicado. Al mismo tiempo, las gráficas muestran que Euler es el método que peor conserva la energía y el momento angular.
 
 La explicación más razonable es una **compensación de errores**: la trayectoria de partida o el modelo producen una vuelta más corta que la referencia, mientras que la deriva de Euler modifica la órbita en sentido contrario. El aumento de energía hace al sistema menos ligado y es compatible con órbitas más amplias y lentas, aunque el cambio simultáneo de excentricidad y momento angular impide atribuir todo el efecto a una única variable.
@@ -675,21 +614,18 @@ Marte tiene la mayor discrepancia absoluta con RK4, unos 4,035 días, pero Mercu
 ### 5.1. Definición
 
 Se utiliza la energía total del sistema:
-
 \[
 
-E(t)=\sum_i\frac12m_i\|\mathbf v_i(t)\|^2
+E(t)=\sum_i\frac12m_i\\|\mathbf v_i(t)\\|^2
 
--\sum_{i<j}\frac{Gm_im_j}{r_{ij}(t)}.
+-\sum_{i\<j}\frac{Gm_im_j}{r_{ij}(t)}.
 
 \]
-
 El valor negativo es compatible con un sistema ligado, tomando el cero de potencial en separación infinita. Que la energía aumente hacia valores menos negativos no significa que se acerque a cero por un proceso físico del modelo: puede ser una ganancia artificial introducida por la discretización.
 
 ### 5.2. Indicador de conservación
 
 Calculo:
-
 \[
 
 \varepsilon_E(t)=
@@ -697,7 +633,6 @@ Calculo:
 \frac{|E(t)-E(0)|}{|E(0)|}\times100.
 
 \]
-
 El valor absoluto del denominador permite interpretar correctamente el porcentaje aunque \(E(0)<0\). El indicador mide la desviación respecto al estado inicial, no respecto a una solución analítica desconocida.
 
 Un error pequeño es una señal favorable, pero no garantiza que la fase orbital sea correcta. Dos trayectorias pueden conservar casi la misma energía y encontrarse en lugares distintos de sus órbitas.
@@ -747,30 +682,26 @@ Conviene complementarlas con una figura sin Euler o con un panel ampliado, y exp
 ### 6.1. Definición
 
 El momento angular total es:
-
 \[
 
 \mathbf L(t)=\sum_i m_i\bigl(\mathbf r_i(t)\times\mathbf v_i(t)\bigr).
 
 \]
-
 La función `momento_angular()` calcula sus tres componentes y conserva la información vectorial hasta el momento de evaluar los diagnósticos. La conservación se debe a la anulación de los momentos de las fuerzas internas, no a que cada órbita esté aislada.
 
 ### 6.2. Indicador de conservación
 
 El error utilizado es:
-
 \[
 
 \varepsilon_L(t)=
 
-\frac{\|\mathbf L(t)-\mathbf L(0)\|}
+\frac{\\|\mathbf L(t)-\mathbf L(0)\\|}
 
-{\|\mathbf L(0)\|}\times100.
+{\\|\mathbf L(0)\\|}\times100.
 
 \]
-
-Este indicador detecta cambios de módulo y de dirección. Es más completo que comparar únicamente \(\|\mathbf L(t)\|\), pues dos vectores de igual longitud pero direcciones distintas no representan el mismo estado de rotación total.
+Este indicador detecta cambios de módulo y de dirección. Es más completo que comparar únicamente \(\\|\mathbf L(t)\\|\), pues dos vectores de igual longitud pero direcciones distintas no representan el mismo estado de rotación total.
 
 La segunda gráfica muestra precisamente ese error vectorial, aunque su título hable de momento angular «total». La figura del módulo es un diagnóstico complementario, no la fuente del error vectorial.
 
@@ -946,3 +877,5 @@ Las fuentes externas utilizadas para contrastar los parámetros físicos y los v
 - JPL Solar System Dynamics, constantes astrodinámicas y parámetros gravitatorios: Astrodynamic Parameters.
 - JPL Horizons, documentación sobre estados, elementos orbitales, marcos de referencia y escalas temporales: Horizons System.
 - NASA, material educativo sobre la precesión relativista de Mercurio: Newton and Einstein.
+
+Los resultados numéricos, las tablas y las gráficas comentados en el informe corresponden a los experimentos realizados para este proyecto. No se incluye aquí una correspondencia con archivos concretos del código.
