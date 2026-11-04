@@ -119,11 +119,13 @@ E=K+U,
 $$
 
 $$
-K=\sum_i \frac{1}{2}m_i \lVert\mathbf{v}_i\rVert^2,
+K=\sum_i \frac{1}{2}m_i \|\mathbf{v}_i\|^2,
 $$
 
 $$
-U=-\sum_{i<j}\frac{Gm_i m_j}{r_{ij}}, \qquad r_{ij}=\lVert\mathbf{r}_j-\mathbf{r}_i\rVert.
+U=-\sum_{i<j}\frac{Gm_i m_j}{r_{ij}},
+\qquad
+r_{ij}=\|\mathbf{r}_j-\mathbf{r}_i\|.
 $$
 
 Como el potencial no depende explícitamente del tiempo y no hay fuerzas externas ni disipativas, la solución exacta conserva $E$. Una variación de la energía calculada a partir de la trayectoria numérica es, por tanto, un indicador del error del integrador y del redondeo, no una pérdida física contemplada por el modelo.
@@ -746,3 +748,5 @@ Las fuentes externas utilizadas para contrastar los parámetros físicos y los v
 - NASA, material educativo sobre la precesión relativista de Mercurio: [Newton and Einstein](https://imagine.gsfc.nasa.gov/educators/programs/cosmictimes/educators/workshops/docs/InquiringIntoNatureUniverse/Newton_Einstein_FactCards.pdf).
 
 Los resultados numéricos, las tablas y las gráficas comentados en el informe corresponden a los experimentos realizados para este proyecto. No se incluye aquí una correspondencia con archivos concretos del código.
+
+
