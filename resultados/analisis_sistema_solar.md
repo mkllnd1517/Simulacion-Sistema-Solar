@@ -119,11 +119,11 @@ E=K+U,
 $$
 
 $$
-K=\sum_i\frac12m_i\|\mathbf v_i\|^2,
+K=\sum_i \frac{1}{2}m_i\left\lVert\mathbf{v}_i\right\rVert^2,
 $$
 
 $$
-U=-\sum_{i<j}\frac{Gm_im_j}{r_{ij}}, \qquad r_{ij}=\|\mathbf r_j-\mathbf r_i\|.
+U=-\sum_{i<j}\frac{Gm_i m_j}{r_{ij}}, \qquad r_{ij}=\left\lVert\mathbf{r}_j-\mathbf{r}_i\right\rVert.
 $$
 
 Como el potencial no depende explícitamente del tiempo y no hay fuerzas externas ni disipativas, la solución exacta conserva $E$. Una variación de la energía calculada a partir de la trayectoria numérica es, por tanto, un indicador del error del integrador y del redondeo, no una pérdida física contemplada por el modelo.
@@ -489,7 +489,7 @@ Marte tiene la mayor discrepancia absoluta con RK4, unos 4,035 días, pero Mercu
 Se utiliza la energía total del sistema:
 
 $$
-E(t)=\sum_i\frac12m_i\|\mathbf v_i(t)\|^2 -\sum_{i<j}\frac{Gm_im_j}{r_{ij}(t)}.
+E(t)=\sum_i \frac{1}{2}m_i\left\lVert\mathbf{v}_i(t)\right\rVert^2 - \sum_{i<j}\frac{Gm_i m_j}{r_{ij}(t)}.
 $$
 
 El valor negativo es compatible con un sistema ligado, tomando el cero de potencial en separación infinita. Que la energía aumente hacia valores menos negativos no significa que se acerque a cero por un proceso físico del modelo: puede ser una ganancia artificial introducida por la discretización.
@@ -746,4 +746,5 @@ Las fuentes externas utilizadas para contrastar los parámetros físicos y los v
 - NASA, material educativo sobre la precesión relativista de Mercurio: [Newton and Einstein](https://imagine.gsfc.nasa.gov/educators/programs/cosmictimes/educators/workshops/docs/InquiringIntoNatureUniverse/Newton_Einstein_FactCards.pdf).
 
 Los resultados numéricos, las tablas y las gráficas comentados en el informe corresponden a los experimentos realizados para este proyecto. No se incluye aquí una correspondencia con archivos concretos del código.
+
 
