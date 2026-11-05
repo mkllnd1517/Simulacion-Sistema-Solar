@@ -123,7 +123,7 @@ K=\sum_i \frac{1}{2}m_i\left\lVert\mathbf{v}_i\right\rVert^2,
 $$
 
 $$
-U=-\sum_{i<j}\frac{Gm_i m_j}{r_{ij}}, \qquad r_{ij}=\left\lVert\mathbf{r}_j-\mathbf{r}_i\right\rVert.
+U=-\sum_{i < j}\frac{Gm_i m_j}{r_{ij}}, \qquad r_{ij}=\left\lVert\mathbf{r}_j-\mathbf{r}_i\right\rVert.
 $$
 
 Como el potencial no depende explícitamente del tiempo y no hay fuerzas externas ni disipativas, la solución exacta conserva $E$. Una variación de la energía calculada a partir de la trayectoria numérica es, por tanto, un indicador del error del integrador y del redondeo, no una pérdida física contemplada por el modelo.
@@ -139,7 +139,7 @@ $$
 Las fuerzas internas cumplen la tercera ley de Newton y están dirigidas a lo largo de la línea que une cada pareja. En consecuencia, sus pares de fuerzas no producen un momento neto:
 
 $$
-\frac{d\mathbf L}{dt} =\sum_{i<j}(\mathbf r_i-\mathbf r_j)\times\mathbf F_{ij} =\mathbf 0.
+\frac{d\mathbf L}{dt} =\sum_{i < j}(\mathbf r_i-\mathbf r_j)\times\mathbf F_{ij} =\mathbf 0.
 $$
 
 Se conservan el vector completo y, por tanto, su módulo.
